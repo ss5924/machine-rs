@@ -1,0 +1,1 @@
+insert into vendor(vendor_name, vendor_address, vendor_fax, create_at, update_at) values('홍길동', '집주소', '12-123', now(), now());
