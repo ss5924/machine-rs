@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/vendor")
 public class VendorController {
-
     private final VendorService vendorService;
     private final VendorProducer vendorProducer;
 
@@ -20,8 +19,11 @@ public class VendorController {
 
     @PostMapping(value = "/kafka")
     public ResponseEntity<String> saveVendor(@RequestBody VendorDto vendorDto) {
-        vendorProducer.send(vendorDto);
-        return ResponseEntity.ok("Vendor request sent to Kafka!");
+        try {
+            vendorProducer.send(vendorDto);
+            return ResponseEntity.ok("Message sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to send message");
+        }
     }
-
 }
