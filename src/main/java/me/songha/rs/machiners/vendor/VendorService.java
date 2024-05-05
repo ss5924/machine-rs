@@ -13,4 +13,8 @@ public class VendorService {
     public VendorDto getVendor(Long id) {
         return vendorRepository.getReferenceById(id).toVendorDto();
     }
+
+    public VendorDto save(VendorDto vendorDto) {
+        return vendorRepository.save(vendorDto.toEntity()).toVendorDto();
+    }
 }

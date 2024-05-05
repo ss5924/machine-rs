@@ -43,4 +43,12 @@ public class VendorDto {
         this.updateAt = updateAt;
     }
 
+    public Vendor toEntity() {
+        return Vendor.builder()
+                .vendorAddress(this.vendorAddress)
+                .vendorFax(this.vendorFax)
+                .vendorName(this.vendorName)
+                .build();
+    }
+
 }

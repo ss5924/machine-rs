@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
@@ -42,5 +41,12 @@ public class Vendor implements Serializable {
                 .createAt(this.createAt)
                 .updateAt(this.updateAt)
                 .build();
+    }
+
+    @Builder
+    public Vendor(String vendorName, String vendorAddress, String vendorFax) {
+        this.vendorName = vendorName;
+        this.vendorAddress = vendorAddress;
+        this.vendorFax = vendorFax;
     }
 }

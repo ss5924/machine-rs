@@ -1,0 +1,21 @@
+1. 도커 컨테이너 실행
+docker-compose up -d
+
+2. 카프카 컨테이너 접속
+docker exec -it kafka /bin/bash
+
+3. 토픽 생성, 이름 topic1
+kafka-topics.sh --create --topic topic1 --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3
+
+토픽 리스트 확인: kafka-topics.sh --list --bootstrap-server localhost:9092
+토픽 상세 조회: kafka-topics.sh --describe --topic topic1 --bootstrap-server kafka:9092
+토픽 삭제: kafka-topics.sh --delete --bootstrap-server kafka:9092 --topic topic1
+
+4. 컨슈머 실행
+cd /opt/kafka_2.13-2.8.1/bin/
+./kafka-console-consumer.sh --topic topic1 --bootstrap-server kafka:9092
+
+5. 프로듀서 실행
+cd /opt/kafka_2.13-2.8.1/bin/
+./kafka-console-producer.sh --topic topic1 --broker-list kafka:9092
+
