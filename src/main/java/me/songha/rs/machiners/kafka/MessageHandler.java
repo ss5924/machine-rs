@@ -21,7 +21,7 @@ public class MessageHandler implements MessageCallback {
 
     @Override
     public void onFailure(String jsonObject, String errorMessage) {
-        log.error("Unable to send message={}, due to : {}", jsonObject, errorMessage);
+        log.error("Unable to send message={}, due to={}", jsonObject, errorMessage);
         this.jsonObject = jsonObject;
         this.errorMessage = errorMessage;
         this.messageSuccess = false;

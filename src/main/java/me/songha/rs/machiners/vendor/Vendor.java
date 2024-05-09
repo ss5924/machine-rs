@@ -44,7 +44,8 @@ public class Vendor implements Serializable {
     }
 
     @Builder
-    public Vendor(String vendorName, String vendorAddress, String vendorFax) {
+    public Vendor(Long id, String vendorName, String vendorAddress, String vendorFax) {
+        this.id = id;
         this.vendorName = vendorName;
         this.vendorAddress = vendorAddress;
         this.vendorFax = vendorFax;

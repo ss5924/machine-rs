@@ -22,7 +22,6 @@ public class VendorConsumer {
             VendorDto vendorDto = objectMapper.readValue(record.value(), VendorDto.class);
             VendorDto result = vendorService.save(vendorDto);
             log.info("VendorConsumer.consume result->{}", result);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

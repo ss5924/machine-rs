@@ -11,7 +11,9 @@ public class VendorService {
 
     @Cacheable(value = "Vendor", key = "#id", cacheManager = "cacheManager")
     public VendorDto getVendor(Long id) {
-        return vendorRepository.getReferenceById(id).toVendorDto();
+        return vendorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("not found"))
+                .toVendorDto();
     }
 
     public VendorDto save(VendorDto vendorDto) {
