@@ -1,4 +1,4 @@
-package me.songha.rs.machiners.kafka;
+package me.songha.rs.machiners.msg;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;

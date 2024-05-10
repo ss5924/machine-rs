@@ -1,7 +1,6 @@
 package me.songha.rs.machiners.vendor;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.rs.machiners.kafka.VendorProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

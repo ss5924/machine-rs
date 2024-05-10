@@ -1,10 +1,8 @@
-package me.songha.rs.machiners.kafka;
+package me.songha.rs.machiners.vendor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.songha.rs.machiners.vendor.VendorDto;
-import me.songha.rs.machiners.vendor.VendorService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;

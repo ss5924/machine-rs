@@ -1,4 +1,4 @@
-package me.songha.rs.machiners.kafka;
+package me.songha.rs.machiners.msg;
 
 public interface MessageCallback {
     void onSuccess(String jsonObject, long offset);
