@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class VendorController {
     private final VendorService vendorService;
     private final VendorProducer vendorProducer;
-
+    
     @Operation(summary = "Vendor 조회", description = "id로 Vendor를 조회한다.", operationId = "getVendor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = VendorDto.class))),
