@@ -57,7 +57,6 @@ public class Product implements Serializable {
                 .manufacturer(this.manufacturer)
                 .price(this.price)
                 .createAt(this.createAt)
-                .updateAt(this.updateAt)
-                .build();
+                .updateAt(this.updateAt).build();
     }
 }
