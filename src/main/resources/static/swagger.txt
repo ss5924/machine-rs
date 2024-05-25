@@ -1,1 +1,5 @@
 http://localhost:8080/swagger-ui/index.html
+
+빌드배포 테스트 성공후
+http://192.168.0.37:8080/swagger-ui/index.html
+http://sdimivy014.ipdisk.co.kr:30001/swagger-ui/index.html
