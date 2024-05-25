@@ -1,0 +1,31 @@
+# Use the official Ubuntu image as the base image
+FROM ubuntu:20.04
+
+# Set the environment variable for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set the Maven version
+ENV MAVEN_VERSION=3.8.4
+
+# Install OpenJDK 21, Maven, and required packages
+RUN apt-get update && \
+    apt-get install -y wget tar openjdk-21-jdk && \
+    wget https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
+    tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt && \
+    ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven && \
+    ln -s /opt/maven/bin/mvn /usr/bin/mvn && \
+    rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
+    apt-get clean
+
+# Set Maven environment variables
+ENV MAVEN_HOME=/opt/maven
+ENV PATH=${MAVEN_HOME}/bin:${PATH}
+
+# Verify installation
+RUN java -version && mvn -version
+
+# Set working directory
+WORKDIR /workspace
+
+# Define default command
+CMD ["mvn", "--version"]

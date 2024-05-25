@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/ss5924/machine-rs.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                        sh 'mvn clean install'
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                        sh 'mvn test'
+                    }
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                        sh 'mvn package'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to server...'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+
+        success {
+            echo 'Build completed successfully!'
+        }
+
+        failure {
+            echo 'Build failed. Check the logs for details.'
+        }
+    }
+}

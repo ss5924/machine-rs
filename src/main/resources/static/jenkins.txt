@@ -1,0 +1,18 @@
+** jenkins
+
+
+Dockerfile로 jdk21과 mvn을 묶은 image 생성
+docker build -t jdk21-maven:latest .
+
+
+Docker 소켓을 컨테이너와 공유
+(-v /var/run/docker.sock:/var/run/docker.sock)
+
+
+Jenkins 컨테이너 내부에 Docker CLI를 설치
+docker exec -it jenkins-docker bash
+apt-get update
+apt-get install -y docker.io
+
+
+Jenkinsfile을 설정하여 Docker 이미지를 빌드하고 사용
