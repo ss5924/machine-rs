@@ -1,0 +1,30 @@
+
+docker pull docker.bintray.io/jfrog/artifactory-oss:latest
+
+
+sudo chown -R 1030:1030 /opt/artifactory/data
+sudo chmod -R 775 /opt/artifactory/data
+
+
+docker run --name artifactory \
+  -d \
+  -p 8081:8081 \
+  -v /opt/artifactory/data:/var/opt/jfrog/artifactory \
+  docker.bintray.io/jfrog/artifactory-oss:latest
+
+
+
+
+sudo mkdir -p /opt/artifactory/data/var/etc/security
+sudo touch /opt/artifactory/data/var/etc/security/master.key
+sudo chown -R 1030:1030 /opt/artifactory/data/var/etc/security
+sudo chmod 600 /opt/artifactory/data/var/etc/security/master.key
+
+echo "randomly_generated_secure_key" | sudo tee /opt/artifactory/data/var/etc/security/master.key > /dev/null
+
+
+docker stop artifactory
+docker rm artifactory
+docker run --name artifactory -d -p 8081:8081 -v /opt/artifactory/data:/var/opt/jfrog/artifactory docker.bintray.io/jfrog/artifactory-oss:latest
+
+

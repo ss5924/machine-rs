@@ -1,4 +1,4 @@
-** jenkins
+** jenkins admin/admin
 
 
 Dockerfile로 jdk21과 mvn을 묶은 image 생성

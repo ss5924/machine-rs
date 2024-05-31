@@ -1,3 +1,6 @@
 1. kafka consumer 이상한거 서버 내렸다가 다시 올리니 됨, 서버 올릴 때 옵션 실수했을수도 있고 추측
 
 2. 다음 과제 : 수동인증 (Acknowledgment)
+
+3. jfrog artifactory 무료 버전 이미지 설치 진행 시 내부적으로 postgresql을 찾는데 없다고 에러가 발생하는데,
+해결책으로 postgresql를 설치해서 설정 변경을 통해 해당 서버를 바라보게 하라..라고 하는데 nexus로 변경함

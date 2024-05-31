@@ -1,0 +1,13 @@
+http://192.168.0.37:8081/ admin/1234
+
+
+docker pull sonatype/nexus3
+
+docker volume create nexus
+
+docker volume inspect my_nexus_data
+
+docker run -d -p 8081:8081 --name nexus -v /var/lib/docker/volumes/nexus/_data:/sonatype-work sonatype/nexus3
+
+docker exec -it nexus cat /nexus-data/admin.password
+
