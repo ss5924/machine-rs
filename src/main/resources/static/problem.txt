@@ -4,3 +4,7 @@
 
 3. jfrog artifactory 무료 버전 이미지 설치 진행 시 내부적으로 postgresql을 찾는데 없다고 에러가 발생하는데,
 해결책으로 postgresql를 설치해서 설정 변경을 통해 해당 서버를 바라보게 하라..라고 하는데 nexus로 변경함
+
+4. maven settings.xml 설정에 nexus 배포를 위한 인증 설정을 추가해야하는데
+현재는 임시방편으로 pipeline에 settings.xml 파일을 복사하도록 함
+nexus에서 dependency를 가져올 때 https 를 권장하나 임시로 http를 허용하도록 settings.xml 파일 수정

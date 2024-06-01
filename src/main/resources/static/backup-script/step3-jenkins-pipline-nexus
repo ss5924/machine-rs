@@ -1,0 +1,138 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'machine-rs'
+        CONTAINER_NAME = 'machine-rs-container'
+        NEXUS_URL = 'http://192.168.0.37:8081/repository/maven-snapshots/'
+        NEXUS_REPOSITORY = 'maven-snapshots'
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials-id'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/ss5924/machine-rs.git'
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                        withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            // settings.xml 파일을 컨테이너 내로 복사
+                            writeFile file: 'settings.xml', text: """
+                            <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+                                <servers>
+                                    <server>
+                                        <id>maven-snapshots</id>
+                                        <username>${USERNAME}</username>
+                                        <password>${PASSWORD}</password>
+                                    </server>
+                                    <server>
+                                        <id>maven-releases</id>
+                                        <username>${USERNAME}</username>
+                                        <password>${PASSWORD}</password>
+                                    </server>
+                                </servers>
+                                <mirrors>
+                                    <mirror>
+                                        <id>nexus</id>
+                                        <mirrorOf>*</mirrorOf>
+                                        <url>http://192.168.0.37:8081/repository/maven-public/</url>
+                                    </mirror>
+                                </mirrors>
+                                <profiles>
+                                    <profile>
+                                        <id>nexus</id>
+                                        <repositories>
+                                            <repository>
+                                                <id>central</id>
+                                                <url>http://192.168.0.37:8081/repository/maven-central/</url>
+                                                <releases>
+                                                    <enabled>true</enabled>
+                                                </releases>
+                                                <snapshots>
+                                                    <enabled>true</enabled>
+                                                </snapshots>
+                                            </repository>
+                                        </repositories>
+                                        <pluginRepositories>
+                                            <pluginRepository>
+                                                <id>central</id>
+                                                <url>http://192.168.0.37:8081/repository/maven-central/</url>
+                                                <releases>
+                                                    <enabled>true</enabled>
+                                                </releases>
+                                                <snapshots>
+                                                    <enabled>true</enabled>
+                                                </snapshots>
+                                            </pluginRepository>
+                                        </pluginRepositories>
+                                    </profile>
+                                </profiles>
+                                <activeProfiles>
+                                    <activeProfile>nexus</activeProfile>
+                                </activeProfiles>
+                            </settings>
+                            """
+                            sh """
+                            mvn clean deploy -Dmaven.test.skip=true \
+                            -s settings.xml \
+                            -DaltDeploymentRepository=${NEXUS_REPOSITORY}::default::${NEXUS_URL} \
+                            -Dbuild.number=${env.BUILD_NUMBER}
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                       sh "mvn package -Dbuild.number=${env.BUILD_NUMBER}"
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def image = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Deploy to Local Server') {
+            steps {
+                script {
+                    sh """
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+                    docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${IMAGE_NAME}:${env.BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+
+        success {
+            echo 'Build completed successfully!'
+        }
+
+        failure {
+            echo 'Build failed. Check the logs for details.'
+        }
+    }
+}
