@@ -10,7 +10,7 @@
     </parent>
     <groupId>me.songha.rs</groupId>
     <artifactId>machine-rs</artifactId>
-    <version>1.0.0-${build.number}-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>machine-rs</name>
 
     <description>machine-rs</description>
