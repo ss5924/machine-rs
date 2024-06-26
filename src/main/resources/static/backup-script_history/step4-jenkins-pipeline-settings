@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Build and Deploy') {
+        stage('Deploy') {
             steps {
                 script {
                     docker.image('jdk21-maven:latest').inside {
@@ -31,16 +31,6 @@ pipeline {
                                 """
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        stage('Package') {
-            steps {
-                script {
-                    docker.image('jdk21-maven:latest').inside {
-                       sh "mvn package"
                     }
                 }
             }
@@ -70,13 +60,13 @@ pipeline {
     post {
         always {
             cleanWs()
-            script {
-                sh "docker rmi ${IMAGE_NAME} || true"
-            }
         }
 
         success {
             echo 'Build completed successfully!'
+            script {
+                sh "docker rmi ${IMAGE_NAME} || true"
+            }
         }
 
         failure {
