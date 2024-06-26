@@ -1,5 +1,5 @@
 ** jenkins admin/admin
-
+http://192.168.0.37:8082
 
 Dockerfile로 jdk21과 mvn을 묶은 image 생성
 docker build -t jdk21-maven:latest .

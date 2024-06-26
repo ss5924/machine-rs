@@ -46,3 +46,7 @@
 - [ ] GraphQL로 적용
 - [ ] Nexus를 활용한 모듈화
 - [ ] 코드 리팩토링
+
+## URL
+- [프로젝트 리포지토리](https://github.com/ss5924/machine-rs)
+- [API 문서 (Swagger)](http://ss4754.iptime.org:30001/swagger-ui/index.html)

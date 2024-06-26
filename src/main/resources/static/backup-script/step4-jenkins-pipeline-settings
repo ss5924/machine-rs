@@ -1,0 +1,86 @@
+// settings.xml을 jenkins Managed files에서 관리
+
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'machine-rs'
+        CONTAINER_NAME = 'machine-rs-container'
+        NEXUS_URL = 'http://192.168.0.37:8081/repository/maven-snapshots/'
+        NEXUS_REPOSITORY = 'maven-snapshots'
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials-id'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/ss5924/machine-rs.git'
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                        configFileProvider([configFile(fileId: 'f2b40b8d-923d-408c-9ce6-04d63234aafb', variable: 'MAVEN_SETTINGS')]) {
+                            withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                sh """
+                                mvn clean deploy -Dmaven.test.skip=true \
+                                -s ${MAVEN_SETTINGS} \
+                                -DaltDeploymentRepository=${NEXUS_REPOSITORY}::default::${NEXUS_URL}
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                script {
+                    docker.image('jdk21-maven:latest').inside {
+                       sh "mvn package"
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def image = docker.build("${IMAGE_NAME}")
+                }
+            }
+        }
+
+        stage('Deploy to Local Server') {
+            steps {
+                script {
+                    sh """
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+                    docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${IMAGE_NAME}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+            script {
+                sh "docker rmi ${IMAGE_NAME} || true"
+            }
+        }
+
+        success {
+            echo 'Build completed successfully!'
+        }
+
+        failure {
+            echo 'Build failed. Check the logs for details.'
+        }
+    }
+}
