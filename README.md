@@ -46,6 +46,3 @@
 ## To-Do List
 - 재고 CRUD 기능
 
-## URL
-- [프로젝트 리포지토리](https://github.com/ss5924/machine-rs)
-- [API 문서 (Swagger)](http://ss4754.iptime.org:20001/swagger-ui/index.html)
